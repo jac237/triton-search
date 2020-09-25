@@ -1,5 +1,5 @@
 # Full Stack Course Searching Web App (***Triton Search***) with Firebase Firestore, Vue.js/Vuex, Bulma, Buefy, Cheerio.js
-* [x] Triton Search App: https://www.triton-search.vercel.app/
+* [x] Triton Search App: https://triton-search.vercel.app/
 
 ## Web Scraping w/ Cheerio.js
 * [x] Scrape all department urls.

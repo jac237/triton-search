@@ -1,5 +1,5 @@
 <template>
-  <footer class="footer">
+  <footer class="footer has-background-white">
     <div class="columns is-mobile">
       <div class="column is-one-third">
         <a href="https://github.com/jac237/" target="_blank" rel="noopener nofollow">GitHub</a>

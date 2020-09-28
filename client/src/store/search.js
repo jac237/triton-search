@@ -60,7 +60,9 @@ const actions = {
       // Push course item into coures array using commit function.
       // console.log('Adding course:', course);
       commit('addCourse', course);
+      return id;
     }
+    return null;
   },
   async deleteCourseItem({ commit }, path) {
     const div = path.find(element => element.className === 'columns');
@@ -76,6 +78,7 @@ const actions = {
     // Remove course item from courses array using commit function.
     // console.log('Deleting course at index: ', index);
     commit('deleteCourse', index);
+    return id;
   },
 };
 

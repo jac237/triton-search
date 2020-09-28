@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav class="navbar is-light is-spaced" role="navigation" aria-label="main navigation">
+    <nav class="navbar is-dark pl-2 pr-2 pt-1 pb-1" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a
           class="navbar-item"
@@ -29,7 +29,7 @@
             rel="noopener nofollow"
             title="Github">
               <div style="font-size: 36px;">
-                <i class="fab fa-github"></i>
+                <i class="fab fa-github" style="color: white"></i>
               </div>
           </a>
           <a
@@ -39,7 +39,7 @@
             rel="noopener nofollow"
             title="LinkedIn">
               <div style="font-size: 36px;">
-                <i class="fab fa-linkedin"></i>
+                <i class="fab fa-linkedin" style="color: white;"></i>
               </div>
           </a>
         </div>

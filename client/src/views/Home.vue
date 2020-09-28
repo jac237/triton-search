@@ -8,7 +8,7 @@
           position="static"
           mobile="reduce"
           expand-on-hover
-          type="is-light"
+          type="is-white"
           fullheight
           open>
           <div class="p-1 added-list has-text-left" :data="courses">
@@ -26,11 +26,22 @@
                 </p>
               </div>
               <div class="column" style="margin: auto;">
-                <button class="button is-danger" @click="onDeleteCourse($event)">
+                <button class="button is-danger mb-2" @click="onDeleteCourse($event)">
                   <span class="icon is-small">
                     <i class="fas fa-trash"></i>
                   </span>
                 </button>
+                <button class="button is-info" @click="onDisplayInfo($event)">
+                  <span class="icon is-small">
+                    <i class="fas fa-info"></i>
+                  </span>
+                </button>
+              </div>
+              <div class="description" style="display: none;">
+                {{ course.description }}
+              </div>
+              <div class="prereqs" style="display: none;">
+                {{ course.prereqs }}
               </div>
             </div>
           </div>
@@ -39,8 +50,8 @@
           <Disclaimer />
           <!-- SEARCH SELECTION -->
           <section class="search has-text-left mb-5">
-            <form @submit.prevent="onSearchCourses()">
-              <b-field
+            <form @submit.prevent="onSearchCourses">
+              <!-- <b-field
                 label="Search by Deparment:">
                 <b-select
                   expanded
@@ -54,6 +65,23 @@
                     {{department.acronym}} - {{department.title}}
                   </option>
                 </b-select>
+                <button class="button is-info">Search</button>
+              </b-field> -->
+              <b-field label="Search by Department:">
+                <b-autocomplete
+                  v-model="search"
+                  :data="filteredDepartments"
+                  :open-on-focus="true"
+                  :keep-first="true"
+                  :clearable="true"
+                  placeholder="e.g. CSE, COGS, BIOL"
+                  icon="magnify"
+                  field="acronym"
+                  :custom-formatter="searchLabel"
+                  @select="option => (selected = option)"
+                  expanded
+                >
+                </b-autocomplete>
                 <button class="button is-info">Search</button>
               </b-field>
             </form>
@@ -96,12 +124,12 @@
               <template slot="detail" slot-scope="props">
                 <div class="content">
                   <p>
-                      <strong>Course Description:</strong>
-                      <br>
-                      {{ props.row.description }}
-                      <br><br>
-                      <strong>Prerequisites:</strong>
-                      {{ props.row.prereqs }}
+                    <strong>Course Description:</strong>
+                    <br>
+                    {{ props.row.description }}
+                    <br><br>
+                    <strong>Prerequisites:</strong>
+                    {{ props.row.prereqs }}
                   </p>
                 </div>
               </template>
@@ -110,38 +138,101 @@
           <div class="bg-image"></div>
         </div>
       </section>
+      <Footer />
     </div>
-    <Footer />
   </section>
 </template>
 
 <script>
 // @ is an alias to /src
 import { mapState, mapActions } from 'vuex';
-// import store from '@/store';
+// Import components
 import Footer from '@/components/Footer.vue';
 import Disclaimer from '@/components/Disclaimer.vue';
 
 export default {
   name: 'Home',
   data: () => ({
-    selected: '',
+    search: '',
+    selected: null,
+    prevSearch: null,
     defaultOpenedDetails: [1],
   }),
   async mounted() {
     await this.init();
   },
-  computed: mapState('search', ['departments', 'results', 'courses']),
+  computed: {
+    ...mapState('search', ['departments', 'results', 'courses']),
+    filteredDepartments() {
+      return this.departments.filter((department) => {
+        const label = this.searchLabel(department).toLowerCase();
+        return label.indexOf(this.search.toLowerCase()) >= 0;
+      });
+    },
+  },
   methods: {
     ...mapActions('search', ['init', 'searchCourseItems', 'addCourseItem', 'deleteCourseItem']),
+    searchLabel(option) {
+      return `${option.acronym} - ${option.title}`;
+    },
     async onSearchCourses() {
-      await this.searchCourseItems(this.selected.value);
+      if (this.selected && this.selected !== this.prevSearch) {
+        this.prevSearch = this.selected;
+        this.$buefy.toast.open({
+          message: `Searching <b>${this.selected.acronym}</b> department!`,
+          type: 'is-black',
+        });
+        await this.searchCourseItems(this.selected.acronym);
+      }
     },
     async onAddCourse(event) {
-      await this.addCourseItem(event.path);
+      const id = await this.addCourseItem(event.path);
+      if (id) {
+        this.$buefy.snackbar.open({
+          duration: 900,
+          message: `Course ${id} Added!`,
+          type: 'is-success',
+          queue: 'false',
+        });
+      }
     },
     async onDeleteCourse(event) {
-      await this.deleteCourseItem(event.path);
+      const id = await this.deleteCourseItem(event.path);
+      if (id) {
+        this.$buefy.snackbar.open({
+          duration: 900,
+          message: `Course ${id} Deleted!`,
+          type: 'is-danger',
+          queue: 'false',
+        });
+      }
+    },
+    onDisplayInfo(event) {
+      const div = event.path.find((element) => element.className === 'columns');
+      const id = div.getAttribute('id');
+      const description = div.querySelector('.description').innerHTML;
+      const prereqs = div.querySelector('.prereqs').innerHTML;
+      const InfoModal = `
+        <form action="">
+          <div class="modal-card" style="width: auto">
+            <header class="modal-card-head">
+              <p class="modal-card-title">${id}</p>
+            </header>
+            <section class="modal-card-body">
+              <b>Description:</b> ${description}
+              <hr width="75%">
+              <b>Prerequisites:</b> ${prereqs}
+            </section>
+          </div>
+        </form>
+      `;
+      this.$buefy.modal.open({
+        parent: this,
+        content: InfoModal,
+        hasModalCard: true,
+        customClass: 'info-modal',
+        trapFocus: true,
+      });
     },
   },
   components: {

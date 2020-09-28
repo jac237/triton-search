@@ -23,8 +23,10 @@
   * [x] Add `Pagination` to table.
   * [x] Create `Add` Button to add courses to side bar.
   * [ ] Sort results by lower division first, then upper division, etc.
+  * [x] Create `snackbar` notification when adding course
 * [x] Create a `SideBar` for added courses.
   * [x] Create `Delete` Button to remove selected courses.
+  * [ ] Create `Info` Button to display course information.
 
 ## Back-End w/ Vue.js + Vuex.js
 * [x] Get all departments from database into `b-select` tags.
@@ -32,9 +34,9 @@
 * [ ] Fix Button click on Vue Network for mobile.
 
 ## After
-* [x] Deploy source code to GitHub.
+* [x] Push source code to GitHub.
 * [x] Fix Lucid Chart graph.
-* [x] Install NOW CLI.
+* [x] Install Vercel CLI.
 * [x] Fix any web scraping errors.
 * [ ] Refactor code.
 * [ ] Review and refine README/documentation.

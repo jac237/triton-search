@@ -51,22 +51,6 @@
           <!-- SEARCH SELECTION -->
           <section class="search has-text-left mb-5">
             <form @submit.prevent="onSearchCourses">
-              <!-- <b-field
-                label="Search by Deparment:">
-                <b-select
-                  expanded
-                  required
-                  v-model="selected">
-                  <option disabled value="">Select a department</option>
-                  <option
-                    v-for="department in departments"
-                    :key="department.acronym"
-                    :value="{ value: department.acronym}">
-                    {{department.acronym}} - {{department.title}}
-                  </option>
-                </b-select>
-                <button class="button is-info">Search</button>
-              </b-field> -->
               <b-field label="Search by Department:">
                 <b-autocomplete
                   v-model="search"
@@ -103,6 +87,8 @@
               :show-detail-icon="true"
               :paginated="true"
               :per-page="10"
+              :current-page="currPage"
+              @page-change="onPageChange"
               pagination-position="bottom"
               :mobile-cards="false">
               <b-table-column field="id" label="Course(s)" v-slot="props" :searchable="true">
@@ -156,6 +142,7 @@ export default {
     search: '',
     selected: null,
     prevSearch: null,
+    currPage: 1,
     defaultOpenedDetails: [1],
   }),
   async mounted() {
@@ -175,6 +162,9 @@ export default {
     searchLabel(option) {
       return `${option.acronym} - ${option.title}`;
     },
+    onPageChange(page) {
+      this.currPage = page;
+    },
     async onSearchCourses() {
       if (this.selected && this.selected !== this.prevSearch) {
         this.prevSearch = this.selected;
@@ -183,6 +173,7 @@ export default {
           type: 'is-black',
         });
         await this.searchCourseItems(this.selected.acronym);
+        this.onPageChange(1);
       }
     },
     async onAddCourse(event) {
@@ -190,7 +181,7 @@ export default {
       if (id) {
         this.$buefy.snackbar.open({
           duration: 900,
-          message: `Course ${id} Added!`,
+          message: `Course <b>${id}</b> Added!`,
           type: 'is-success',
           queue: 'false',
         });
@@ -201,7 +192,7 @@ export default {
       if (id) {
         this.$buefy.snackbar.open({
           duration: 900,
-          message: `Course ${id} Deleted!`,
+          message: `Course <b>${id}</b> Deleted!`,
           type: 'is-danger',
           queue: 'false',
         });

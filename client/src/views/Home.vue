@@ -24,7 +24,6 @@
                 </button>
               </div>
             </div>
-            <!-- TRYING NEW STUFF -->
             <article
               class="media"
               v-for="course in courses"
@@ -61,37 +60,6 @@
                 </div>
               </div>
             </article>
-            <!-- <div
-              class="columns"
-              v-for="course in courses"
-              :key="course.id"
-              :id="course.id">
-              <div class="column">
-                <p>
-                  <strong>{{ course.id }}</strong>
-                  <br>
-                  {{ course.name }}
-                </p>
-              </div>
-              <div class="column">
-                <button class="button is-danger mb-2" @click="onDeleteCourse($event)">
-                  <span class="icon is-small">
-                    <i class="fas fa-trash"></i>
-                  </span>
-                </button>
-                <button class="button is-info" @click="onDisplayInfo($event)">
-                  <span class="icon is-small">
-                    <i class="fas fa-info"></i>
-                  </span>
-                </button>
-              </div>
-              <div class="description" style="display: none;">
-                {{ course.description }}
-              </div>
-              <div class="prereqs" style="display: none;">
-                {{ course.prereqs }}
-              </div>
-            </div> -->
           </div>
         </b-sidebar>
         <div class="p-2" style="flex-grow: 1; padding-left:5%; padding-right:5%">

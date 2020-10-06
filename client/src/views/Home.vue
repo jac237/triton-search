@@ -11,21 +11,69 @@
           type="is-white"
           fullheight
           open>
-          <div class="p-1 added-list has-text-left" :data="courses">
-            <label class="label">Added Courses:</label>
-            <div
+          <div class="p-1 has-text-left" id="added-list" :data="courses">
+            <div class="columns print-section">
+              <div class="column is-two-thirds">
+                <label class="label">Added Courses:</label>
+              </div>
+              <div class="column">
+                <button
+                  class="button is-small is-info is-light"
+                  @click="onPrintCourses">
+                  Print
+                </button>
+              </div>
+            </div>
+            <!-- TRYING NEW STUFF -->
+            <article
+              class="media"
+              v-for="course in courses"
+              :key="course.id"
+              :id="course.id">
+              <div class="media-content">
+                <div class="content">
+                  <p>
+                    <strong>{{ course.id }}</strong>
+                    <br>
+                    {{ course.name }}
+                  </p>
+                </div>
+              </div>
+              <div class="media-right">
+                <a class="is-block" @click="onDeleteCourse($event)">
+                  <span class="icon has-text-danger is-medium">
+                    <i class="fas fa-times-circle fa-lg"></i>
+                  </span>
+                </a>
+                <a class="is-block" @click="onDisplayInfo($event)">
+                  <span class="icon has-text-info is-medium">
+                    <i class="fas fa-info-circle fa-lg"></i>
+                  </span>
+                </a>
+                <div class="name" style="display: none;">
+                  {{ course.name }}
+                </div>
+                <div class="description" style="display: none;">
+                  {{ course.description }}
+                </div>
+                <div class="prereqs" style="display: none;">
+                  {{ course.prereqs }}
+                </div>
+              </div>
+            </article>
+            <!-- <div
               class="columns"
               v-for="course in courses"
               :key="course.id"
               :id="course.id">
-              <div class="column is-three-quarters">
+              <div class="column">
                 <p>
                   <strong>{{ course.id }}</strong>
                   <br>
                   {{ course.name }}
                 </p>
               </div>
-              <div class="column" style="margin: auto;">
+              <div class="column">
                 <button class="button is-danger mb-2" @click="onDeleteCourse($event)">
                   <span class="icon is-small">
                     <i class="fas fa-trash"></i>
@@ -43,7 +91,7 @@
               <div class="prereqs" style="display: none;">
                 {{ course.prereqs }}
               </div>
-            </div>
+            </div> -->
           </div>
         </b-sidebar>
         <div class="p-2" style="flex-grow: 1; padding-left:5%; padding-right:5%">
@@ -51,7 +99,13 @@
           <!-- SEARCH SELECTION -->
           <section class="search has-text-left mb-5">
             <form @submit.prevent="onSearchCourses">
-              <b-field label="Search by Department:">
+              <label class="label">
+                Search by Department:
+                <p class="is-inline is-italic" v-if="search">
+                  "{{ search}}"
+                </p>
+              </label>
+              <b-field id="autocomplete-search">
                 <b-autocomplete
                   v-model="search"
                   :data="filteredDepartments"
@@ -132,6 +186,7 @@
 <script>
 // @ is an alias to /src
 import { mapState, mapActions } from 'vuex';
+import print from 'print-js';
 // Import components
 import Footer from '@/components/Footer.vue';
 import Disclaimer from '@/components/Disclaimer.vue';
@@ -158,12 +213,27 @@ export default {
     },
   },
   methods: {
-    ...mapActions('search', ['init', 'searchCourseItems', 'addCourseItem', 'deleteCourseItem']),
+    ...mapActions('search', [
+      'init',
+      'searchCourseItems',
+      'addCourseItem',
+      'deleteCourseItem',
+    ]),
     searchLabel(option) {
       return `${option.acronym} - ${option.title}`;
     },
     onPageChange(page) {
       this.currPage = page;
+    },
+    onPrintCourses() {
+      print({
+        printable: this.courses,
+        properties: ['id', 'name', 'description', 'units', 'prereqs'],
+        header: '<h3>COURSE DESCRIPTION(S)</h3>',
+        type: 'json',
+        style: 'th { text-align: left; } td { vertical-align: top; padding: 10px; }',
+        gridStyle: 'border-bottom: 1px solid #ddd;',
+      });
     },
     async onSearchCourses() {
       if (this.selected && this.selected !== this.prevSearch) {
@@ -183,7 +253,6 @@ export default {
           duration: 900,
           message: `Course <b>${id}</b> Added!`,
           type: 'is-success',
-          queue: 'false',
         });
       }
     },
@@ -194,20 +263,20 @@ export default {
           duration: 900,
           message: `Course <b>${id}</b> Deleted!`,
           type: 'is-danger',
-          queue: 'false',
         });
       }
     },
     onDisplayInfo(event) {
-      const div = event.path.find((element) => element.className === 'columns');
-      const id = div.getAttribute('id');
-      const description = div.querySelector('.description').innerHTML;
-      const prereqs = div.querySelector('.prereqs').innerHTML;
+      const media = event.path.find((element) => element.nodeName === 'ARTICLE');
+      const id = media.getAttribute('id');
+      const name = media.querySelector('.name').innerHTML;
+      const description = media.querySelector('.description').innerHTML;
+      const prereqs = media.querySelector('.prereqs').innerHTML;
       const InfoModal = `
         <form action="">
           <div class="modal-card" style="width: auto">
             <header class="modal-card-head">
-              <p class="modal-card-title">${id}</p>
+              <p class="modal-card-title">${id} / ${name}</p>
             </header>
             <section class="modal-card-body">
               <b>Description:</b> ${description}

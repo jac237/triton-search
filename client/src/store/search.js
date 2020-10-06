@@ -65,8 +65,8 @@ const actions = {
     return null;
   },
   async deleteCourseItem({ commit }, path) {
-    const div = path.find(element => element.className === 'columns');
-    const id = div.getAttribute('id');
+    const media = path.find(element => element.nodeName === 'ARTICLE');
+    const id = media.getAttribute('id');
     let index;
     state.courses.find((row, idx) => {
       if (row.id === id) {

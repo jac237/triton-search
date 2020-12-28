@@ -11,10 +11,10 @@
             <img
               src="../public/images/icons8-shark-48.png"
               alt="Triton Search Logo Image"
-              width="40px"
-              height="50px">
+              width="35px"
+              height="40px">
           <div
-            class="is-size-2 ml-3"
+            class="is-size-4 ml-2"
             style="font-family: 'Roboto', serif;">
             triton search
           </div>

@@ -5,7 +5,7 @@ import db from '@/db';
 const state = {
   departments: [],
   results: [],
-  courses: [],
+  courses: {},
 };
 
 const mutations = {
@@ -15,11 +15,14 @@ const mutations = {
   setResults(state, results) {
     state.results = results;
   },
-  addCourse(state, courses) {
-    state.courses.push(courses);
+  addCourse(state, course) {
+    state.courses = { ...state.courses };
+    state.courses[course.id] = course;
+    console.log(state.courses);
   },
-  deleteCourse(state, index) {
-    state.courses.splice(index, 1);
+  deleteCourse(state, courseId) {
+    delete state.courses[courseId];
+    state.courses = { ...state.courses };
   },
 };
 
@@ -50,34 +53,18 @@ const actions = {
         // console.log(results);
       });
   },
-  async addCourseItem({ commit }, path) {
-    const tr = path.find(element => element.nodeName === 'TR');
-    const id = tr.children[1].innerText;
-    const course = state.results.find(row => row.id === id);
-    const found = state.courses.find(row => row.id === id);
-    // Prevent duplicate adds.
-    if (!found) {
-      // Push course item into coures array using commit function.
-      // console.log('Adding course:', course);
+  async addCourseItem({ commit }, course) {
+    // console.log(course.id, course);
+    // Check if key already exists in dictionary
+    if (course.id in state.courses) {
+      return null;
+    } else {
       commit('addCourse', course);
-      return id;
+      return course.id;
     }
-    return null;
   },
-  async deleteCourseItem({ commit }, path) {
-    const media = path.find(element => element.nodeName === 'ARTICLE');
-    const id = media.getAttribute('id');
-    let index;
-    state.courses.find((row, idx) => {
-      if (row.id === id) {
-        index = idx;
-        return true;
-      }
-      return false;
-    });
-    // Remove course item from courses array using commit function.
-    // console.log('Deleting course at index: ', index);
-    commit('deleteCourse', index);
+  async deleteCourseItem({ commit }, id) {
+    commit('deleteCourse', id);
     return id;
   },
 };

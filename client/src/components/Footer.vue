@@ -8,14 +8,14 @@
         <a href="https://linkedin.com/in/jessieacruz/" target="_blank" rel="noopener nofollow">LinkedIn</a>
         </div>
       <div class="column">
-        <a href="#top" rel="nofollow noopener">Back to top</a>
+        <a href="#" rel="nofollow noopener">Back to top</a>
         </div>
     </div>
     <div class="columns is-mobile">
       <div class="column">
         Made by <a href="https://linkedin.com/in/jessieacruz/" target="_blank" rel="nofollow noopener">Jessie Cruz</a>.
         Project idea from <a href="https://www.youtube.com/watch?v=6R7u6EMWaa4" target="_blank" rel="nofollow noopener">Coding Garden with CJ</a>.
-        Code released under the <a href="#footer">MIT License</a>.
+        Code released under the <a href="https://github.com/jac237/triton-search/blob/master/LICENSE">MIT License</a>.
       </div>
     </div>
     <div class="columns is-mobile">

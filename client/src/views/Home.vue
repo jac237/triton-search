@@ -4,7 +4,7 @@
       <section class="sidebar-layout">
           <!-- ADDED COURSES SIDEBAR -->
         <b-sidebar
-          v-if="typeof courses[0] != 'undefined'"
+          v-if="notEmpty"
           position="static"
           mobile="reduce"
           expand-on-hover
@@ -39,12 +39,12 @@
                 </div>
               </div>
               <div class="media-right">
-                <a class="is-block" @click="onDeleteCourse($event)">
+                <a class="is-block" @click="onDeleteCourse(course)">
                   <span class="icon has-text-danger is-medium">
                     <i class="fas fa-times-circle fa-lg"></i>
                   </span>
                 </a>
-                <a class="is-block" @click="onDisplayInfo($event)">
+                <a class="is-block" @click="onDisplayInfo(course)">
                   <span class="icon has-text-info is-medium">
                     <i class="fas fa-info-circle fa-lg"></i>
                   </span>
@@ -66,6 +66,7 @@
           <Disclaimer />
           <!-- SEARCH SELECTION -->
           <section class="search has-text-left mb-5">
+            <!-- SEARCH FORM -->
             <form @submit.prevent="onSearchCourses">
               <label class="label">
                 Search by Department:
@@ -73,6 +74,7 @@
                   "{{ search}}"
                 </p>
               </label>
+              <!-- AUTOCOMPLETE INPUT -->
               <b-field id="autocomplete-search">
                 <b-autocomplete
                   v-model="search"
@@ -88,7 +90,8 @@
                   expanded
                 >
                 </b-autocomplete>
-                <button class="button is-info">Search</button>
+                <!-- SEARCH BUTTON -->
+                <button type="submit" class="button search-button is-info">Search</button>
               </b-field>
             </form>
           </section>
@@ -112,7 +115,8 @@
               :current-page="currPage"
               @page-change="onPageChange"
               pagination-position="bottom"
-              :mobile-cards="false">
+              :mobile-cards="false"
+            >
               <b-table-column field="id" label="Course(s)" v-slot="props" :searchable="true">
                 {{props.row.id}}
               </b-table-column>
@@ -122,13 +126,14 @@
               <b-table-column field="units" label="Units" v-slot="props" :searchable="true">
                 {{props.row.units}}
               </b-table-column>
-              <b-table-column field="add" label="Add">
-                <button class="button is-success" @click="onAddCourse($event)">
+              <b-table-column field="add" label="AddCourse" v-slot="props">
+                <button class="button is-success" @click="onAddCourse(props.row)">
                   <span class="icon">
                     <i class="fas fa-plus"></i>
                   </span>
                 </button>
               </b-table-column>
+              <!-- COURSE INFO DROPDOWN CONTENT -->
               <template slot="detail" slot-scope="props">
                 <div class="content">
                   <p>
@@ -179,6 +184,9 @@ export default {
         return label.indexOf(this.search.toLowerCase()) >= 0;
       });
     },
+    notEmpty() {
+      return Object.keys(this.courses).length !== 0;
+    },
   },
   methods: {
     ...mapActions('search', [
@@ -195,7 +203,7 @@ export default {
     },
     onPrintCourses() {
       print({
-        printable: this.courses,
+        printable: Object.values(this.courses),
         properties: ['id', 'name', 'description', 'units', 'prereqs'],
         header: '<h3>COURSE DESCRIPTION(S)</h3>',
         type: 'json',
@@ -214,8 +222,8 @@ export default {
         this.onPageChange(1);
       }
     },
-    async onAddCourse(event) {
-      const id = await this.addCourseItem(event.path);
+    async onAddCourse(courseItem) {
+      const id = await this.addCourseItem(courseItem);
       if (id) {
         this.$buefy.snackbar.open({
           duration: 900,
@@ -224,8 +232,8 @@ export default {
         });
       }
     },
-    async onDeleteCourse(event) {
-      const id = await this.deleteCourseItem(event.path);
+    async onDeleteCourse(courseItem) {
+      const id = await this.deleteCourseItem(courseItem.id);
       if (id) {
         this.$buefy.snackbar.open({
           duration: 900,
@@ -234,25 +242,23 @@ export default {
         });
       }
     },
-    onDisplayInfo(event) {
-      const media = event.path.find((element) => element.nodeName === 'ARTICLE');
-      const id = media.getAttribute('id');
-      const name = media.querySelector('.name').innerHTML;
-      const description = media.querySelector('.description').innerHTML;
-      const prereqs = media.querySelector('.prereqs').innerHTML;
+    onDisplayInfo(courseItem) {
+      // Get course item info by destructing object.
+      const {
+        id, name, description, prereqs,
+      } = courseItem;
+
       const InfoModal = `
-        <form action="">
-          <div class="modal-card" style="width: auto">
-            <header class="modal-card-head">
-              <p class="modal-card-title">${id} / ${name}</p>
-            </header>
-            <section class="modal-card-body">
-              <b>Description:</b> ${description}
-              <hr width="75%">
-              <b>Prerequisites:</b> ${prereqs}
-            </section>
-          </div>
-        </form>
+        <div class="modal-card" style="width: auto">
+          <header class="modal-card-head">
+            <p class="modal-card-title">${id} / ${name}</p>
+          </header>
+          <section class="modal-card-body">
+            <b>Description:</b> ${description}
+            <hr width="75%">
+            <b>Prerequisites:</b> ${prereqs}
+          </section>
+        </div>
       `;
       this.$buefy.modal.open({
         parent: this,
@@ -305,6 +311,16 @@ export default {
     min-height: 100%;
   }
 }
+
+.media-right {
+  margin-left: 0.5rem;
+}
+
+.search-button {
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
 // .b-sidebar .sidebar-content {
 //   width: 300px;
 // }

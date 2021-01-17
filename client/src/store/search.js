@@ -48,19 +48,33 @@ const actions = {
         querySnapshot.forEach(doc => {
           const result = doc.data();
           results.push(result);
+          console.log(result.id);
+        });
+        // Sort results by the course number:
+        results.sort((a, b) => {
+          const regex = /\d+/;
+          const leftIndex = parseInt(a.id.match(regex)[0]);
+          const rightIndex = parseInt(b.id.match(regex)[0]);
+
+          if (leftIndex < rightIndex) {
+            return -1;
+          } else if (leftIndex > rightIndex) {
+            return 1;
+          } else {
+            return 0;
+          }
         });
         commit('setResults', results);
-        // console.log(results);
       });
   },
   async addCourseItem({ commit }, course) {
     // console.log(course.id, course);
     // Check if key already exists in dictionary
     if (course.id in state.courses) {
-      return null;
+      return false;
     } else {
       commit('addCourse', course);
-      return course.id;
+      return true;
     }
   },
   async deleteCourseItem({ commit }, id) {

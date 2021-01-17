@@ -1,30 +1,40 @@
 <template>
-  <footer class="footer has-background-white">
-    <div class="columns is-mobile">
-      <div class="column is-one-third">
-        <a href="https://github.com/jac237/" target="_blank" rel="noopener nofollow">GitHub</a>
+  <footer class="footer">
+    <div class="container">
+      <nav class="level has-text-left is-mobile">
+        <div class="level-item">
+          <div class="menu">
+            <p class="menu-label">TritonSearch</p>
+
+            <ul class="menu-list">
+              <li><router-link to="about">About</router-link></li>
+              <li><router-link to="feedback">Feedback</router-link></li>
+            </ul>
+          </div>
         </div>
-      <div class="column">
-        <a href="https://linkedin.com/in/jessieacruz/" target="_blank" rel="noopener nofollow">LinkedIn</a>
+
+        <div class="level-item">
+          <div class="menu">
+            <p class="menu-label">Resources</p>
+
+            <ul class="menu-list">
+              <li><a href="https://www.youtube.com/codinggarden/">CodingGarden</a></li>
+              <li><a href="https://www.youtube.com/thecodingtrain/">CodingTrain</a></li>
+            </ul>
+          </div>
         </div>
-      <div class="column">
-        <a href="#" rel="nofollow noopener">Back to top</a>
+
+        <div class="level-item">
+          <div class="menu">
+            <p class="menu-label">Socials</p>
+
+            <ul class="menu-list">
+              <li><a href="https://github.com/jac237/">GitHub</a></li>
+              <li><a href="https://linkedin.com/in/jessieacruz/">LinkedIn</a></li>
+            </ul>
+          </div>
         </div>
-    </div>
-    <div class="columns is-mobile">
-      <div class="column">
-        Made by <a href="https://linkedin.com/in/jessieacruz/" target="_blank" rel="nofollow noopener">Jessie Cruz</a>.
-        Project idea from <a href="https://www.youtube.com/watch?v=6R7u6EMWaa4" target="_blank" rel="nofollow noopener">Coding Garden with CJ</a>.
-        Code released under the <a href="https://github.com/jac237/triton-search/blob/master/LICENSE">MIT License</a>.
-      </div>
-    </div>
-    <div class="columns is-mobile">
-      <div class="column">
-        Designed with <a href="https://buefy.org/" target="_blank" rel="noopener nofollow">Beufy</a>.
-        Favicons by <a href="https://icons8.com/" target="_blank" rel="nofollow noopener">Icons8</a>.
-        Icons by <a href="https://fontawesome.com/" target="_blank" rel="nofollow noopener">Font Awesome</a>,
-        <a href="https://fontawesome.com/license" target="_blank" rel="nofollow noopener">License</a>.
-      </div>
+      </nav>
     </div>
   </footer>
 </template>
@@ -35,5 +45,15 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.menu-label {
+  font-size: 16px;
+  font-weight: bolder;
+  color: dimgray;
+}
+
+.menu-list a {
+  padding: 0.25em 1em 0.25rem 0em;
+  font-size: 17px;
+}
 </style>

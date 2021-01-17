@@ -1,7 +1,7 @@
 <template>
   <footer class="footer">
     <div class="container">
-      <nav class="level has-text-left is-mobile">
+      <nav class="level has-text-centered">
         <div class="level-item">
           <div class="menu">
             <p class="menu-label">TritonSearch</p>

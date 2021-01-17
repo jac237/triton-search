@@ -2,7 +2,7 @@
   <section class="home is-family-sans-serif has-text-centered">
     <div class="sidebar-page">
       <section class="sidebar-layout">
-          <!-- ADDED COURSES SIDEBAR -->
+          <!-- SIDEBAR ADDED COURSES -->
         <b-sidebar
           v-if="notEmpty"
           position="static"
@@ -13,14 +13,11 @@
           open>
           <div class="p-1 has-text-left" id="added-list" :data="courses">
             <div class="columns print-section">
-              <div class="column is-two-thirds">
-                <label class="label">Added Courses:</label>
-              </div>
               <div class="column">
                 <button
                   class="button is-small is-info is-light"
                   @click="onPrintCourses">
-                  Print
+                  PDF
                 </button>
               </div>
             </div>
@@ -62,44 +59,54 @@
             </article>
           </div>
         </b-sidebar>
-        <div class="p-2" style="flex-grow: 1; padding-left:5%; padding-right:5%">
-          <Disclaimer />
-          <!-- SEARCH SELECTION -->
-          <section class="search has-text-left mb-5">
-            <!-- SEARCH FORM -->
-            <form @submit.prevent="onSearchCourses">
-              <label class="label">
-                Search by Department:
-                <p class="is-inline is-italic" v-if="search">
-                  "{{ search}}"
-                </p>
-              </label>
-              <!-- AUTOCOMPLETE INPUT -->
-              <b-field id="autocomplete-search">
-                <b-autocomplete
-                  v-model="search"
-                  :data="filteredDepartments"
-                  :open-on-focus="true"
-                  :keep-first="true"
-                  :clearable="true"
-                  placeholder="e.g. CSE, COGS, BIOL"
-                  icon="magnify"
-                  field="acronym"
-                  :custom-formatter="searchLabel"
-                  @select="option => (selected = option)"
-                  expanded
-                >
-                </b-autocomplete>
-                <!-- SEARCH BUTTON -->
-                <button type="submit" class="button search-button is-info">Search</button>
-              </b-field>
-            </form>
-          </section>
+
+        <div class="sidebar-content">
+          <Disclaimer class="p-2"/>
+          <!-- SEARCH SELECTION FORM -->
+          <div class="search-container">
+            <div class="columns is-centered">
+              <div class="column is-three-quarters">
+                <!-- SEARCH FORM -->
+                <form @submit.prevent="onSearchCourses" class="has-text-left">
+                  <!-- AUTOCOMPLETE INPUT -->
+                  <b-field id="autocomplete-search">
+                    <b-autocomplete
+                      v-model="search"
+                      :data="filteredDepartments"
+                      :open-on-focus="true"
+                      :keep-first="true"
+                      :clearable="true"
+                      placeholder="Search by Department: e.g. CSE, Cognitive Science, Warren"
+                      icon="magnify"
+                      field="acronym"
+                      :custom-formatter="searchLabel"
+                      @select="option => (selected = option)"
+                      expanded
+                    >
+                    </b-autocomplete>
+                    <!-- SEARCH BUTTON -->
+                    <button type="submit" class="button search-button is-info">Search</button>
+                  </b-field>
+                </form>
+                <div class="form-label pt-2 is-centered">
+                  Made with <i class="fas fa-heart has-text-danger"></i> using
+                  <span class="has-text-weight-bold">Vue.js</span>,
+                  <span class="has-text-weight-bold">Cloud Firestore</span>,
+                  <span class="has-text-weight-bold">Buefy</span>, and
+                  <span class="has-text-weight-bold">Bulma</span>.
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- FEATURES -->
+          <div class="container" v-if="typeof results[0] == 'undefined'">
+            <Features />
+          </div>
           <!-- SEARCH RESULTS TABLE -->
-          <section
-            class="results-list has-text-left mb-5"
+          <div
+            class="container results-container has-text-left mb-5"
             v-if="typeof results[0] != 'undefined'">
-            <label class="label">Results:</label>
+            <!-- <label class="label">Results:</label> -->
             <b-table
               :data="results"
               ref="tableResults"
@@ -110,11 +117,6 @@
               detailed
               detail-key="id"
               :show-detail-icon="true"
-              :paginated="true"
-              :per-page="10"
-              :current-page="currPage"
-              @page-change="onPageChange"
-              pagination-position="bottom"
               :mobile-cards="false"
             >
               <b-table-column field="id" label="Course(s)" v-slot="props" :searchable="true">
@@ -126,8 +128,12 @@
               <b-table-column field="units" label="Units" v-slot="props" :searchable="true">
                 {{props.row.units}}
               </b-table-column>
-              <b-table-column field="add" label="AddCourse" v-slot="props">
-                <button class="button is-success" @click="onAddCourse(props.row)">
+              <b-table-column field="add" label="" v-slot="props">
+                <button
+                  class="button is-small is-info"
+                  style="border-radius: 50%"
+                  @click="onAddCourse(props.row)"
+                >
                   <span class="icon">
                     <i class="fas fa-plus"></i>
                   </span>
@@ -147,25 +153,27 @@
                 </div>
               </template>
             </b-table>
-          </section>
+          </div>
           <div class="bg-image"></div>
         </div>
       </section>
-      <Footer />
     </div>
   </section>
 </template>
 
 <script>
-// @ is an alias to /src
 import { mapState, mapActions } from 'vuex';
 import print from 'print-js';
-// Import components
-import Footer from '@/components/Footer.vue';
+
 import Disclaimer from '@/components/Disclaimer.vue';
+import Features from '@/components/Features.vue';
 
 export default {
   name: 'Home',
+  components: {
+    Disclaimer,
+    Features,
+  },
   data: () => ({
     search: '',
     selected: null,
@@ -223,12 +231,19 @@ export default {
       }
     },
     async onAddCourse(courseItem) {
-      const id = await this.addCourseItem(courseItem);
-      if (id) {
+      const courseId = courseItem.id;
+      const isAdded = await this.addCourseItem(courseItem);
+      if (isAdded) {
         this.$buefy.snackbar.open({
           duration: 900,
-          message: `Course <b>${id}</b> Added!`,
+          message: `Course <b>${courseId}</b> Added!`,
           type: 'is-success',
+        });
+      } else {
+        this.$buefy.snackbar.open({
+          duration: 900,
+          message: 'Already Added!',
+          type: 'is-danger',
         });
       }
     },
@@ -269,10 +284,6 @@ export default {
       });
     },
   },
-  components: {
-    Disclaimer,
-    Footer,
-  },
 };
 </script>
 
@@ -281,6 +292,7 @@ export default {
   position: relative;
   overflow: hidden;
 }
+
 .home:after {
   content: '';
   display: block;
@@ -294,12 +306,15 @@ export default {
   background-image: url('../../public/images/misc-icons-bg.svg');
   background-repeat: repeat;
 }
+
 .p-1 {
   padding: 1em;
 }
+
 .p-2 {
   padding: 2em;
 }
+
 .sidebar-page {
   display: flex;
   flex-direction: column;
@@ -316,9 +331,30 @@ export default {
   margin-left: 0.5rem;
 }
 
+.form-label {
+  color: lightgray;
+  font-size: 14px;
+}
+
+.search-container {
+  background-color: #363636;
+  padding-top: 3em;
+  padding-bottom: 3em;
+  margin-bottom: 2em;
+}
+
+.search-form {
+  background-color: blue;
+}
+
 .search-button {
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
+}
+
+.results-container {
+  padding-left: 1em;
+  padding-right: 1em;
 }
 
 // .b-sidebar .sidebar-content {

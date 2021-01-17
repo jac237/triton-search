@@ -1,5 +1,5 @@
 <template>
-  <section class="disclaimer mb-5 has-text-left">
+  <section class="disclaimer has-text-left">
     <b-message type="is-warning" has-icon>
       <strong>Disclaimer</strong>:
       This website is simply for educational purposes and is

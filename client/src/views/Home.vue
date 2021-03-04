@@ -65,7 +65,7 @@
           <!-- SEARCH SELECTION FORM -->
           <div class="search-container">
             <div class="columns is-centered">
-              <div class="column is-three-quarters">
+              <div class="column is-three-quarters p-2">
                 <!-- SEARCH FORM -->
                 <form @submit.prevent="onSearchCourses" class="has-text-left">
                   <!-- AUTOCOMPLETE INPUT -->
@@ -106,7 +106,6 @@
           <div
             class="container results-container has-text-left mb-5"
             v-if="typeof results[0] != 'undefined'">
-            <!-- <label class="label">Results:</label> -->
             <b-table
               :data="results"
               ref="tableResults"

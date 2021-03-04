@@ -8,15 +8,15 @@
       <a
         class="navbar-item"
         href="/"
-        title="Triton Search: UCSD Course Searching">
-          <img
-            src="../../public/images/icons8-shark-48.png"
-            alt="Triton Search Logo Image"
-            width="35px"
-            height="40px">
-        <div
-          class="is-size-4 ml-2"
-          style="font-family: 'Roboto', serif;">
+        title="Triton Search: UCSD Course Searching"
+      >
+        <img
+          src="../../public/images/triton-search-small.png"
+          alt="Triton Search Logo Image"
+          width="35px"
+          height="40px"
+        />
+        <div class="is-size-4 ml-2" style="font-family: 'Roboto', serif">
           triton search
         </div>
       </a>
@@ -28,20 +28,22 @@
           href="https://github.com/jac237/"
           target="_blank"
           rel="noopener nofollow"
-          title="Github">
-            <div style="font-size: 28px;">
-              <i class="fab fa-github" style="color: white"></i>
-            </div>
+          title="Github"
+        >
+          <div style="font-size: 28px">
+            <i class="fab fa-github" style="color: white"></i>
+          </div>
         </a>
         <a
           class="navbar-item has-text-dark"
           href="https://linkedin.com/in/jessieacruz/"
           target="_blank"
           rel="noopener nofollow"
-          title="LinkedIn">
-            <div style="font-size: 28px;">
-              <i class="fab fa-linkedin" style="color: white;"></i>
-            </div>
+          title="LinkedIn"
+        >
+          <div style="font-size: 28px">
+            <i class="fab fa-linkedin" style="color: white"></i>
+          </div>
         </a>
       </div>
     </div>
@@ -54,5 +56,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

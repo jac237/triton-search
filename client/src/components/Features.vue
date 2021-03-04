@@ -1,6 +1,6 @@
 <template>
 <!-- SEARCH, ADD, PRINT -->
-<div class="tile is-ancestor mb-5">
+<div class="tile is-ancestor mb-5 px-5">
   <div class="tile is-parent">
     <div class="tile is-child notification box">
       <p class="title is-capitalized is-size-4 is-family-code">1. search courses</p>
